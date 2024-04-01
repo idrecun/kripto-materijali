@@ -30,7 +30,7 @@ m_encoded = [ascii_lowercase.index(ch) for ch in m]
 m_encoded.extend([0] * (num_blocks * n - len(m)))
 
 # Split message into blocks
-blocks = [m_encoded[i * n : (i + 1) * n] for i in range(n)]
+blocks = [m_encoded[i * n : (i + 1) * n] for i in range(num_blocks)]
 
 # Transform blocks into n-dimensional vectors
 vectors = [ Matrix([[x] for x in block]) for block in blocks]
