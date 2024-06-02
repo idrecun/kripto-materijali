@@ -1,55 +1,28 @@
-import socket
-import threading
+import network
 import diffie_hellman as dh
 
-# Function to start the client
-def start_client(host, port):
-    # Create a TCP socket
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+def logic(socket):
+    private_key = dh.private_key()
+    public_key  = dh.public_key(private_key)
 
-    try:
-        # Connect to the server
-        client_socket.connect((host, port))
-        print(f"Connected to server {host}:{port}")
+    # Send public key to the server
+    socket.send(public_key)
 
-        private_key = dh.private_key()
-        public_key  = dh.public_key(private_key)
-        public_key_hex = hex(public_key)
+    # Receive public key from the server
+    server_public_key = socket.recv()
 
-        # Send public key to the server
-        client_socket.send(public_key_hex.encode("utf-8"))
+    shared_key = dh.shared_key(private_key, server_public_key)
+    shared_key_hex = hex(shared_key)
+    print(f"Shared key with server: {shared_key_hex}")
 
-        # Receive public key from the server
-        response = client_socket.recv(1024).decode("utf-8")
-        print(f"Received public key from server: {response}")
+    # Encrypt and send the file
+    # Read and encrypt the whole file
+    with open("large.txt", "rb") as file:
+        file_data = file.read()
+        encrypted_file = aes.encrypt(shared_key, file_data)
 
-        server_public_key = int(response, 16)
-        shared_key = dh.shared_key(private_key, server_public_key)
-        shared_key_hex = hex(shared_key)
-        print(f"Shared key with server: {shared_key_hex}")
+    # Send encrypted file data in chunks
+    socket.sendall(encrypted_file)
 
-
-        # Encrypt and send the file
-        # Read and encrypt the whole file
-        with open("large.txt", "rb") as file:
-            file_data = file.read()
-            encrypted_file = aes.encrypt(shared_key, file_data)
-
-        # Send encrypted file data in chunks
-        client_socket.sendall(encrypted_file)
-
-    except Exception as e:
-        print(f"Error: {e}")
-    finally:
-        # Close the socket
-        client_socket.close()
-        print("Connection closed.")
-
-if __name__ == "__main__":
-    # Host and port
-    host = "127.0.0.1"
-    port = 12345
-
-    # Start client
-    start_client(host, port)
-
+client = network.Client(logic)
+client.start()

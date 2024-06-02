@@ -1,18 +1,8 @@
-import socket
-import threading
+import network
 import diffie_hellman as dh
 import massey_omura as mo
-import ec
 
-# Function to start the client
-def start_client(host, port):
-    # Create a TCP socket
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    try:
-        # Connect to the server
-        client_socket.connect((host, port))
-
+def logic(socket):
         enc_key, dec_key = mo.generate_keys()
 
         message = input('Enter message to send to the server: ')
@@ -20,29 +10,14 @@ def start_client(host, port):
 
         # Encrypt using client's encryption key
         client_encrypted = mo.encrypt(enc_key, encoded_message)
-        client_socket.send(client_encrypted.hex_encode().encode("utf-8"))
+        socket.send(client_encrypted)
 
         # Receive message encrypted using server's encryption key
-        response = client_socket.recv(1024).decode("utf-8")
-        twice_encrypted = ec.Point(ec.secp256k1, 0, 0)
-        twice_encrypted.hex_decode(response)
+        client_server_encrypted = socket.recv()
 
         # Decrypt using client's decryption key
-        server_encrypted = mo.decrypt(dec_key, twice_encrypted)
-        client_socket.send(server_encrypted.hex_encode().encode("utf-8"))
+        server_encrypted = mo.decrypt(dec_key, client_server_encrypted)
+        socket.send(server_encrypted)
 
-    except Exception as e:
-        print(f"Error: {e}")
-    finally:
-        # Close the socket
-        client_socket.close()
-        print("Connection closed.")
-
-if __name__ == "__main__":
-    # Host and port
-    host = "127.0.0.1"
-    port = 12345
-
-    # Start client
-    start_client(host, port)
-
+client = network.Client(logic)
+client.start()

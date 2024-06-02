@@ -1,7 +1,6 @@
 from Crypto.Util import number
 import secrets
 from math import gcd
-from sympy import mod_inverse
 
 def generate():
     p = number.getPrime(1024)
@@ -12,7 +11,7 @@ def generate():
     while True:
         enc_key = secrets.randbelow(phi) + 1
         if gcd(enc_key, phi) == 1:
-            dec_key = mod_inverse(enc_key, phi)
+            dec_key = pow(enc_key, -1, phi)
             return n, enc_key, dec_key
 
 def encrypt(n, enc_key, message):

@@ -1,6 +1,5 @@
 import network
 import diffie_hellman as dh
-import ec
 
 def logic(socket):
     # Generate DH key pairs
@@ -12,11 +11,11 @@ def logic(socket):
 
     # Receive server's public key from the server
     server_public_key = socket.recv()
-    print(f"Received public key from server: {server_public_key}")
+    print(f"Received public key from server: {hex(server_public_key)}")
 
     # Calculate shared key
     shared_key = dh.shared_key(private_key, server_public_key)
-    print(f"Shared key with server: {shared_key}")
+    print(f"Shared key with server: {hex(shared_key)}")
 
 client = network.Client(logic)
 client.start()

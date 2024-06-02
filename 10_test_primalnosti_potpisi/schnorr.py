@@ -8,7 +8,7 @@ def mod_inverse(a, m):
 def generate_keys(p, g):
     """Generate public and private keys for Schnorr signature using prime field."""
     private_key = random.randint(1, p-2)  # Private key
-    public_key = pow(g, private_key, p)   # Public key
+    public_key = pow(g, -private_key, p)  # Public key
     return public_key, private_key
 
 def sign_message(p, g, private_key, message):
@@ -26,8 +26,8 @@ def verify_signature(p, g, public_key, message, r, s):
     if not (0 < s < p-1):
         return False
     h = int(sha256((str(r) + message).encode()).hexdigest(), 16) % p
-    lhs = pow(g, s, p)
-    rhs = (r * pow(public_key, h, p)) % p
+    lhs = (pow(g, s, p) * pow(public_key, h, p)) % p
+    rhs = r
     return lhs == rhs
 
 # Example usage:

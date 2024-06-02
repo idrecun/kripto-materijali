@@ -1,9 +1,10 @@
 import diffie_hellman as dh
-from sympy import mod_inverse
 
+# Encodes a string into an integer
 def encode(message):
     return int(message.encode('utf-8').hex(), 16)
 
+# Decodes a string from an integer
 def decode(message):
     return bytes.fromhex(hex(message)[2:]).decode('utf-8')
 
@@ -13,4 +14,4 @@ def encrypt(priv_key, oth_pub_key, message):
 
 def decrypt(priv_key, oth_pub_key, ciphertext):
     S = dh.shared_key(priv_key, oth_pub_key)
-    return (ciphertext * mod_inverse(S, dh.p)) % dh.p
+    return (ciphertext * pow(S, -1, dh.p)) % dh.p

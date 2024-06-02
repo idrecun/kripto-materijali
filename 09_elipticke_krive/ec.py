@@ -78,14 +78,6 @@ class Point:
         else:
             return f"({hex(self.x)}, {hex(self.y)})"
 
-    def hex_encode(self):
-        return hex(self.x) + "#" + hex(self.y)
-
-    def hex_decode(self, encoded):
-        parts = encoded.split("#")
-        self.x = int(parts[0], 16)
-        self.y = int(parts[1], 16)
-
 # EC 256-bit parameters
 p = 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f
 a = 0x0000000000000000000000000000000000000000000000000000000000000000
