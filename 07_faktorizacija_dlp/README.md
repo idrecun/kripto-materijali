@@ -1,7 +1,7 @@
-# 08 Faktorizacija i problem diskretnog logaritma
+# Faktorizacija i problem diskretnog logaritma
 
-Implementacije [Polardovog p-1]() algoritma za faktorizaciju i [Polig-Helman]() algoritma za rešavanje problema
-diskretnog logaritma. Oba algoritma se zasnivaju na pretpostavci da je broj $p-1$ [$B$-gladak]().
+Implementacije Polardovog p-1 algoritma za faktorizaciju i Polig-Helman algoritma za rešavanje problema
+diskretnog logaritma. Oba algoritma se zasnivaju na pretpostavci da je broj $p-1$ $B$-gladak.
 
 ## Zadaci
 

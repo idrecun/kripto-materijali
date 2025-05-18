@@ -1,4 +1,4 @@
-# 11 Primer ispita
+# Primer ispita
 
 `template` sadrži materijale koji su potrebni za rešavanje svakog zadatka.
 
