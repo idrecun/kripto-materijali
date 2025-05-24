@@ -13,9 +13,9 @@ naći inverznu vrednost bez dodatne "trapdoor" informacije.
 
 ## Problem diskretnog logaritma (DLP)
 
-Za date vrednosti g i h u cikličnoj grupi G reda n, problem je pronaći x tako da
-je g^x = h. Ovaj problem je težak u određenim grupama (npr. $(\mathbb{Z},
-\dot)$), ali može biti i lak (npr. $(\mathbb{Z},+)$).
+Za date vrednosti $g$ i $h$ u cikličnoj grupi $G$ reda $n$, problem je pronaći $x$ tako da
+je $g^x = h$. Ovaj problem je težak u određenim grupama (npr. $(\mathbb{Z}, \cdot)$), 
+ali može biti i lak (npr. $(\mathbb{Z},+)$).
 
 ~~~
 Primer:
@@ -30,7 +30,7 @@ Rešenje je x = 18 jer je:
 
 ## Problem faktorizacije
 
-Za dat složen broj N, problem je pronaći njegove proste činioce. Ovaj problem je težak za dovoljno velike brojeve.
+Za dat složen broj $N$, problem je pronaći njegove proste činioce. Ovaj problem je težak za dovoljno velike brojeve.
 
 ~~~
 Primer:
@@ -40,13 +40,17 @@ Faktorizacija:
 77 = 7 * 11
 ~~~
 
-## Implementacije protokola
+### Diffie-Hellman razmena ključa (`diffie-hellman/`)
 
-U direktorijumu se nalaze implementacije tri protokola, svaki u svom poddirektorijumu:
+Omogućava zajedničko generisanje ključa koji se posle može koristiti za
+enkripciju simetričnim kriptosistemima. Bezbednost je zasnovana na DLP.
 
-### Diffie-Hellman protokol (`diffie-hellman/`)
-
-Protokol za razmenu ključeva preko nesigurnog kanala. Bezbednost se zasniva na DLP.
+Svaki učesnik generiše svoj privatni podatak (npr. $a$) i na osnovu njega
+računa svoj javni podatak ($A=g^a$). Javni podatak šalje drugom učesniku.
+Obe strane mogu da izračunaju isti, zajednički ključ kombinovanjem svog
+privatnog podatka i javnog podataka drugog učesnika, npr. $K=B^a=g^{ab}$.
+Sve operacije se vrše po modulu prostog broja $p$. Pretpostavka je da su
+$g$ i $p$ javni, unapred određeni parametri protokola.
 
 ~~~
        (privatno a)    A = g^a    ───A──>     (privatno b)
@@ -59,11 +63,17 @@ Protokol za razmenu ključeva preko nesigurnog kanala. Bezbednost se zasniva na 
 
 ### ElGamal kriptosistem (`elgamal/`)
 
-Kriptosistem zasnovan na DLP. Šifrovanje poruke uključuje slučajan element, tako da
-isto otvoreno pismo može imati različite šifrate.
+Kriptosistem zasnovan na DLP. Šifrovanje poruke uključuje slučajan element, tako
+da jedna ista poruka može imati različite šifrate.
+
+Slično Difi-Helman razmeni ključa, parametri $p$ i $g$ su javni, unapred određeni
+parametri. Pošiljalac generiše svoj privatni ključ $x$, i na osnovu njega generiše
+svoj javni ključ $h=g^x$. Poruka $m$ se šifruje kombinovanjem sa slučajnim elementom
+$y$ i ta dva podatka se šalju kao zamaskirani $c_1=g^y$ i $c_2=m \cdot h^y$.
 
 ~~~
-Javni ključ: (p, g, h = g^x)
+Javni parametri: p, g
+Javni ključ: h = g^x
 Privatni ključ: x
 
 m ──> Izabrati y          ───(c1,c2)──>    c1 = g^y
@@ -76,8 +86,11 @@ m ──> Izabrati y          ───(c1,c2)──>    c1 = g^y
 
 ### RSA kriptosistem (`rsa/`)
 
-Kriptosistem zasnovan na problemu faktorizacije. Za razliku od ElGamal-a, šifrovanje
-je determinističko.
+RSA je kriptosistem zasnovan na problemu faktorizacije. Za razliku od ElGamal
+kriptosistema, prosti brojevi $p$ i $q$ su tajni parametri koje korisnik generiše na
+slučajan način prilikom generisanja privatnog ključa. Privatni ključ je slučajno
+odabrana vrednost $e$, a javni ključ se sastoji od dva podatka, $\phi(N) = (p-1)(q-1)$
+i $d = e^{-1} \pmod{\phi(N)}$.
 
 ~~~
 Generisanje ključeva:
