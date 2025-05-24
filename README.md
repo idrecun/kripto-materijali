@@ -31,7 +31,7 @@ okruženje aktivno. Sada možete pokretati primere, na primer:
 
 ```bash
 cd 01_klasicne_sifre
-python caesar_enc.py
+python3 caesar_enc.py
 ```
 
 Za deaktivaciju okruženja dovoljno je pozvati komandu:
