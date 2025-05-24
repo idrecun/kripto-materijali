@@ -1,20 +1,21 @@
 # Kriptografija javnog ključa
 
-_Literatura: Cryptography made simple (poglavlje 14)_
+_Literatura: Cryptography made simple (poglavlja 2, 3, 15, 16)_
 
-Asimetrična kriptografija, poznata i kao kriptografija javnog ključa, rešava problem
-distribucije ključeva koji postoji u simetričnoj kriptografiji. Umesto deljenja tajnog
-ključa, svaki učesnik ima par ključeva - javni ključ koji se slobodno distribuira i
-privatni ključ koji se čuva u tajnosti.
+Asimetrična kriptografija (kriptografija javnog ključa) rešava problem
+distribucije ključeva koji postoji u simetričnoj kriptografiji. Umesto deljenja
+tajnog ključa, svaki učesnik ima par ključeva - javni ključ koji se slobodno
+distribuira i privatni ključ koji se čuva u tajnosti.
 
-Bezbednost asimetričnih kriptosistema zasniva se na postojanju jednosmernih funkcija
-sa tajnim vratima. To su funkcije koje je lako izračunati u jednom smeru, ali je
-teško naći inverznu vrednost bez dodatne informacije (tajnih vrata).
+Bezbednost asimetričnih kriptosistema zasniva se na postojanju "trapdoor"
+funkcija. To su funkcije koje je lako izračunati u jednom smeru, ali je teško
+naći inverznu vrednost bez dodatne "trapdoor" informacije.
 
 ## Problem diskretnog logaritma (DLP)
 
-Za date vrednosti g i h u cikličnoj grupi G reda n, problem je pronaći x tako da je
-g^x = h. Ovaj problem se smatra računski teškim u određenim grupama.
+Za date vrednosti g i h u cikličnoj grupi G reda n, problem je pronaći x tako da
+je g^x = h. Ovaj problem je težak u određenim grupama (npr. $(\mathbb{Z},
+\dot)$), ali može biti i lak (npr. $(\mathbb{Z},+)$).
 
 ~~~
 Primer:
@@ -29,8 +30,7 @@ Rešenje je x = 18 jer je:
 
 ## Problem faktorizacije
 
-Za dat složen broj N, problem je pronaći njegove proste činioce. Ovaj problem se
-smatra računski teškim za dovoljno velike brojeve.
+Za dat složen broj N, problem je pronaći njegove proste činioce. Ovaj problem je težak za dovoljno velike brojeve.
 
 ~~~
 Primer:
@@ -99,18 +99,17 @@ Dešifrovanje: m = c^d mod N
 
 ## Pokretanje primera
 
-Svaki protokol ima implementiran primer komunikacije između klijenta i servera. Za pokretanje:
+Svaki protokol ima implementiran primer komunikacije između klijenta i servera.
+Za pokretanje (npr. za `rsa/`):
 
 1. U jednom terminalu pokrenuti server:
    ```
-   cd protokol/
-   python server.py
+   cd rsa/
+   python3 server.py
    ```
 
 2. U drugom terminalu pokrenuti klijent:
    ```
-   cd protokol/
-   python client.py
+   cd rsa/
+   python3 client.py
    ```
-
-Gde je `protokol/` jedan od direktorijuma: `diffie-hellman/`, `elgamal/` ili `rsa/`.
