@@ -34,6 +34,12 @@ cd 01_klasicne_sifre
 python caesar_enc.py
 ```
 
+Za deaktivaciju okruženja dovoljno je pozvati komandu:
+
+```bash
+deactivate
+```
+
 ### Čišćenje
 
 Ako želite da obrišete python virtuelno okruženje i keširane fajlove:
