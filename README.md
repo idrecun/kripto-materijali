@@ -2,12 +2,6 @@
 
 Materijali za vežbe iz predmeta Kriptografija na master studijama.
 
-## Podešavanje okruženja
-
-Za pokretanje primera potrebno je Python 3.8 ili noviji i nekoliko dodatnih biblioteka.
-Biblioteke se instaliraju u virtuelno okruženje (virtual environment) kako ne bi
-došlo do konflikta sa sistemskim Python paketima.
-
 ### Inicijalno podešavanje
 
 Pokrenite sledeću komandu da napravite virtuelno okruženje i instalirate potrebne
@@ -22,7 +16,7 @@ Ova komanda će:
 2. Instalirati biblioteke navedene u `requirements.txt`:
    - `pycryptodome` - za kriptografske primitive
    - `Pillow` - za rad sa slikama
-   - `sympy` - za matematičke operacije
+   - `sympy` - za simboličku aritmetiku
 
 ### Aktiviranje okruženja
 
@@ -42,7 +36,7 @@ python caesar_enc.py
 
 ### Čišćenje
 
-Ako želite da obrišete virtuelno okruženje i keširane fajlove:
+Ako želite da obrišete python virtuelno okruženje i keširane fajlove:
 
 ```bash
 make clean
