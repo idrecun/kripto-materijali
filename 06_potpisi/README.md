@@ -1,6 +1,6 @@
 # Asimetrična kriptografija 2: Digitalni potpisi i napadi
 
-_Literatura: Cryptography made simple (poglavlje 15)_
+_Literatura: Cryptography made simple (poglavlja 2, 3, 16)_
 
 Digitalni potpisi su kriptografski mehanizmi koji omogućavaju proveru autentičnosti
 poruke i njenog pošiljaoca. Potpisi moraju biti:
