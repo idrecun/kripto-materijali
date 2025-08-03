@@ -23,10 +23,14 @@ se računa na sledeći način:
   - $x_3 = s^2 - x_1 - x_2$
   - $y_3 = s(x_1-x_3) - y_1$
 
+Intuicija iza ovakve definicije je da za svaku pravu koja seče eliptičku krivu u
+tačkama $P$, $Q$ i $R$ važi da je $P + Q + R = \mathcal{O}$. Formule za
+koordinate tačke $R$ se jednostavno izvode na osnovu ove pretpostavke.
+
 ### Množenje skalarom
 
 Množenje tačke skalarom $k$ se definiše kao uzastopno sabiranje: $kP = P + P + \dots + P$
-($k$ puta). U praksi se koristi efikasniji double-and-add algoritam:
+($k$ puta). U praksi se koristi efikasniji algoritam analogan algoritmu za brzo stepenovanje:
 
 ~~~
 k = 13 = 1101₂
@@ -54,11 +58,25 @@ G = (0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798,
 n = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141  # red tačke G
 ~~~
 
+## Parametri eliptičke krive
+
+Parametri eliptičke krive moraju biti pažljivo odabrani:
+
+- **$p$**: Prost broj koji definiše konačno polje $\mathbb{F}_p$ (obično 256-bit ili veći)
+- **$a, b$**: Koeficijenti krive iz $\mathbb{F}_p$ koji zadovoljavaju $4a^3 + 27b^2 \neq 0 \pmod{p}$
+- **$G$**: Generator tačka (baza) grupe, reda $n$
+- **$n$**: Red tačke $G$ (mora biti prost broj za kriptografsku sigurnost)
+
 ## Kriptografski protokoli
+
+U nastavku su opisani kriptografski protokoli adaptirani za rad u grupi eliptičke krive.
 
 ### Diffie-Hellman razmena ključeva (`diffie_hellman/`)
 
-Diffie-Hellman protokol omogućava razmenu tajnog ključa preko nesigurnog kanala:
+**Parametri i domeni:**
+- **Privatni ključevi**: $a, b \in [1, n-1]$ (slučajno odabrani)
+- **Javni ključevi**: $A = aG, B = bG$ (tačke na krivoj)
+- **Zajednički ključ**: $K = abG$ (tačka na krivoj)
 
 1. Alice generiše privatni ključ $a$ i šalje Bob-u javni ključ $A=aG$
 2. Bob generiše privatni ključ $b$ i šalje Alice javni ključ $B=bG$
@@ -67,7 +85,15 @@ Diffie-Hellman protokol omogućava razmenu tajnog ključa preko nesigurnog kanal
 ### ElGamal šifrovanje (`elgamal/`)
 
 ElGamal šema omogućava asimetrično šifrovanje poruka. Poruka $m$ se prvo enkodira
-kao tačka $M$ na krivoj. Šifrovanje:
+kao tačka $M$ na krivoj.
+
+**Parametri i domeni:**
+- **Privatni ključ**: $b \in [1, n-1]$ (slučajno odabran)
+- **Javni ključ**: $B = bG$ (tačka na krivoj)
+- **Efemeralni ključ**: $k \in [1, n-1]$ (slučajno odabran za svaku poruku)
+- **Šifrat**: $(R, C)$ gde su $R, C$ tačke na krivoj
+
+Šifrovanje:
 
 1. Bob ima privatni ključ $b$ i javni ključ $B=bG$
 2. Alice generiše slučajan $k$ i računa:
@@ -78,12 +104,39 @@ kao tačka $M$ na krivoj. Šifrovanje:
 
 Bob dešifruje računajući $M = C - bR$ (jer je $bR = bkG = kB = S$).
 
+### Šnorov digitalni potpisi (`schnorr/`)
+
+**Parametri i domeni:**
+- **Privatni ključ**: $d \in [1, n-1]$ (slučajno odabran)
+- **Javni ključ**: $Q = dG$ (tačka na krivoj)
+- **Efemeralni ključ**: $k \in [1, n-1]$ (slučajno odabran za svaki potpis)
+- **Potpis**: $(R, s)$ gde je $R$ tačka na krivoj, $s \in [1, n-1]$
+
+Za potpisivanje poruke $m$:
+
+1. Generišemo slučajan $k \in [1, n-1]$
+2. Računamo $R = kG$
+3. Računamo $e = H(R||Q||m) \bmod n$ gde je $Q$ javni ključ
+4. Računamo $s = k + ed \bmod n$ gde je $d$ privatni ključ
+5. Potpis je par $(R,s)$
+
+Verifikacija potpisa $(R,s)$ za poruku $m$ i javni ključ $Q$:
+
+1. Računamo $e = H(R||Q||m) \bmod n$
+2. Proveravamo da li je $sG = R + eQ$
+
 ### EC-DSA digitalni potpisi (`ec-dsa/`)
 
-EC-DSA je varijanta DSA algoritma nad eliptičkim krivama. Za potpisivanje poruke $m$:
+**Parametri i domeni:**
+- **Privatni ključ**: $d \in [1, n-1]$ (slučajno odabran)
+- **Javni ključ**: $Q = dG$ (tačka na krivoj)
+- **Efemeralni ključ**: $k \in [1, n-1]$ (slučajno odabran za svaki potpis)
+- **Potpis**: $(r, s)$ gde su $r, s \in [1, n-1]$
 
-1. Generišemo slučajan $k$
-2. Računamo $R = kG$ i uzimamo $r = x_R \bmod n$
+Za potpisivanje poruke $m$:
+
+1. Generišemo slučajan $k \in [1, n-1]$
+2. Računamo $R = kG$ i uzimamo $r = x \bmod n$ za $x$ koordinatu tačke $R$
 3. Računamo $s = k^{-1}(H(m) + dr) \bmod n$ gde je $d$ privatni ključ
 4. Potpis je par $(r,s)$
 
@@ -93,32 +146,3 @@ Verifikacija potpisa $(r,s)$ za poruku $m$ i javni ključ $Q=dG$:
 2. Računamo $u_1 = H(m)w \bmod n$ i $u_2 = rw \bmod n$
 3. Računamo $R = u_1G + u_2Q$
 4. Potpis je validan ako je $x_R \bmod n = r$
-
-### Schnorr digitalni potpisi (`schnorr/`)
-
-Schnorr potpisi su jednostavniji od EC-DSA. Za potpisivanje poruke $m$:
-
-1. Generišemo slučajan $k$
-2. Računamo $R = kG$
-3. Računamo $e = H(R||Q||m)$ gde je $Q$ javni ključ
-4. Računamo $s = k + ed \bmod n$ gde je $d$ privatni ključ
-5. Potpis je par $(R,s)$
-
-Verifikacija potpisa $(R,s)$ za poruku $m$ i javni ključ $Q$:
-
-1. Računamo $e = H(R||Q||m)$
-2. Proveravamo da li je $sG = R + eQ$
-
-## Usage
-
-Each protocol directory contains:
-1. Core implementation file with the cryptographic functions
-2. `client.py` and `server.py` demonstrating protocol usage
-3. Uses the `network.py` module for client/server communication
-
-To run the examples:
-1. Start the server: `python server.py`
-2. In another terminal, start the client: `python client.py`
-
-The examples demonstrate key exchange, encryption/decryption, or signature generation/verification depending on the protocol.
-

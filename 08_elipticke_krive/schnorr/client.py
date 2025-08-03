@@ -1,13 +1,9 @@
-import sys
-sys.path.append('..')
-
 from network import Client
 import schnorr
 
 def handle_connection(socket):
     # Generate client's keypair
-    client_private = schnorr.private_key()
-    client_public = schnorr.public_key(client_private)
+    client_private, client_public = schnorr.generate()
     
     # Receive server's public key
     server_public = socket.recv()

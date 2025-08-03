@@ -1,13 +1,9 @@
-import sys
-sys.path.append('..')
-
 from network import Server
 import ecdsa
 
 def handle_connection(socket):
     # Generate server's keypair
-    server_private = ecdsa.private_key()
-    server_public = ecdsa.public_key(server_private)
+    server_private, server_public = ecdsa.generate()
     
     # Send server's public key
     socket.send(server_public)
