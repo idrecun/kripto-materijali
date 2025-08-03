@@ -56,4 +56,5 @@ make clean
 4. Heš funkcije
 5. Asimetrični kriptosistemi
 6. Asimetrični potpisi
-7. Eliptičke krive 
+7. Faktorizacija i DLP
+8. Eliptičke krive 
