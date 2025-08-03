@@ -1,7 +1,3 @@
-"""
-RSA digitalni potpisi.
-"""
-
 from Crypto.Util import number
 import secrets
 from math import gcd
@@ -14,21 +10,16 @@ def generate():
     n = p * q
 
     while True:
-        sign_key = secrets.randbelow(phi) + 1
-        if gcd(sign_key, phi) == 1:
-            verify_key = pow(sign_key, -1, phi)
+        verify_key = secrets.randbelow(phi) + 1
+        if gcd(verify_key, phi) == 1:
+            sign_key = pow(verify_key, -1, phi)
             return n, verify_key, sign_key
 
 def sign(n, sign_key, message):
-    # Heširamo poruku
-    h = int.from_bytes(sha256(message.encode()).digest(), 'big')
-    h = h % n  # Osiguravamo da je heš manji od n
+    h = int.from_bytes(sha256(message.encode()).digest(), 'big') % n
     return pow(h, sign_key, n)
 
 def verify(n, verify_key, message, signature):
-    # Računamo heš poruke
-    h = int.from_bytes(sha256(message.encode()).digest(), 'big')
-    h = h % n
-    # Verifikujemo potpis
+    h = int.from_bytes(sha256(message.encode()).digest(), 'big') % n
     h_verify = pow(signature, verify_key, n)
     return h == h_verify 
