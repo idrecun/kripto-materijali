@@ -2,66 +2,33 @@
 RSA digitalni potpisi.
 """
 
-from hashlib import sha256
-from random import randrange
-from math import gcd
 from Crypto.Util import number
+import secrets
+from math import gcd
+from hashlib import sha256
 
-def generate_params():
-    """
-    Generisanje RSA parametara (p, q).
-    """
+def generate():
     p = number.getPrime(1024)
     q = number.getPrime(1024)
-    return p, q
-
-def generate_keypair(p=None, q=None):
-    """
-    Generisanje para ključeva.
-    Privatni ključ: (p, q, d)
-    Javni ključ: (N, e)
-    """
-    if p is None or q is None:
-        p, q = generate_params()
-        
-    N = p * q
     phi = (p - 1) * (q - 1)
+    n = p * q
 
-    # Biramo e tako da je gcd(e, phi) = 1
-    e = 65537  # Ferma broj, često se koristi u praksi
-    while gcd(e, phi) != 1:
-        e = randrange(3, phi, 2)
+    while True:
+        sign_key = secrets.randbelow(phi) + 1
+        if gcd(sign_key, phi) == 1:
+            verify_key = pow(sign_key, -1, phi)
+            return n, verify_key, sign_key
 
-    # Računamo d = e^(-1) mod phi
-    d = pow(e, -1, phi)
-
-    return (p, q, d), (N, e)
-
-def sign(private_key, message):
-    """
-    Potpisivanje poruke.
-    """
-    p, q, d = private_key
-    N = p * q
-
+def sign(n, sign_key, message):
     # Heširamo poruku
     h = int.from_bytes(sha256(message.encode()).digest(), 'big')
-    h = h % N  # Osiguravamo da je heš manji od N
+    h = h % n  # Osiguravamo da je heš manji od n
+    return pow(h, sign_key, n)
 
-    # Potpisujemo heš
-    s = pow(h, d, N)
-    return s
-
-def verify(public_key, message, signature):
-    """
-    Verifikacija potpisa.
-    """
-    N, e = public_key
-
+def verify(n, verify_key, message, signature):
     # Računamo heš poruke
     h = int.from_bytes(sha256(message.encode()).digest(), 'big')
-    h = h % N
-
+    h = h % n
     # Verifikujemo potpis
-    h_verify = pow(signature, e, N)
+    h_verify = pow(signature, verify_key, n)
     return h == h_verify 
