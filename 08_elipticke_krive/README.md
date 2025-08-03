@@ -2,10 +2,11 @@
 
 _Literatura: Cryptography made simple (poglavlje 15)_
 
-Eliptičke krive su matematičke strukture koje se koriste za konstrukciju kriptografskih
-protokola. Kriva je definisana jednačinom $y^2 = x^3 + ax + b$ nad poljem $\mathbb{F}_p$,
-gde su $a$ i $b$ parametri krive. Tačke na krivoj, zajedno sa specijalnom tačkom u
-beskonačnosti $\mathcal{O}$, čine grupu sa operacijom sabiranja.
+Eliptičke krive su matematičke strukture koje se koriste za konstrukciju
+kriptografskih protokola. Kriva je definisana jednačinom $y^2 = x^3 + ax + b$
+nad poljem $\mathbb{F}_p$, gde su $a$ i $b$ parametri krive. Tačke na krivoj,
+zajedno sa specijalnom tačkom u beskonačnosti $\mathcal{O}$, čine grupu sa
+operacijom sabiranja.
 
 ## Operacije nad tačkama
 
@@ -25,40 +26,23 @@ se računa na sledeći način:
 
 Intuicija iza ovakve definicije je da za svaku pravu koja seče eliptičku krivu u
 tačkama $P$, $Q$ i $R$ važi da je $P + Q + R = \mathcal{O}$. Formule za
-koordinate tačke $R$ se jednostavno izvode na osnovu ove pretpostavke.
+koordinate tačke $R$ se relativno jednostavno izvode na osnovu ove pretpostavke.
 
 ### Množenje skalarom
 
-Množenje tačke skalarom $k$ se definiše kao uzastopno sabiranje: $kP = P + P + \dots + P$
-($k$ puta). U praksi se koristi efikasniji algoritam analogan algoritmu za brzo stepenovanje:
+Množenje tačke skalarom $k$ se definiše kao uzastopno sabiranje: $kP = P + P +
+\dots + P$ ($k$ puta). U praksi se koristi efikasniji algoritam analogan
+algoritmu za brzo stepenovanje.
 
-~~~
-k = 13 = 1101₂
-P = G
+### Problem diskretnog logaritma
 
-13G = G + 4G + 8G
+Problem diskretnog logaritma je težak na eliptičkoj krivoj. Za tačke $P$ i
+$Q$ na krivoj problem diskretnog logaritma podrazumeva određivanje skalara $k$
+takvog da je $Q = kP$. Prednost eliptičkih krivih u odnosu na polje Zp* je to što je potreban manji broj bitova ključa za isti nivo bezbednosti.
 
-1. G
-2. 2G = G+G
-3. 4G = 2G+2G
-4. 5G = 4G+G
-5. 8G = 4G+4G
-6. 13G = 8G+5G
-~~~
+`ec.py` implementira osnovne operacije nad eliptičkim krivama.
 
-`ec.py` implementira osnovne operacije nad eliptičkim krivama. Koristi se kriva secp256k1
-sa parametrima:
-
-~~~
-p = 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f
-a = 0
-b = 7
-G = (0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798,
-     0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8)
-n = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141  # red tačke G
-~~~
-
-## Parametri eliptičke krive
+### Parametri eliptičke krive
 
 Parametri eliptičke krive moraju biti pažljivo odabrani:
 

@@ -3,6 +3,20 @@
 Implementacije Polardovog p-1 algoritma za faktorizaciju i Polig-Helman algoritma za rešavanje problema
 diskretnog logaritma. Oba algoritma se zasnivaju na pretpostavci da je broj $p-1$ $B$-gladak.
 
+## Pohlig-Hellman napad
+
+Napad na DLP koji radi efikasno kada je red grupe n = p1^e1 * ... * pk^ek proizvod
+malih prostih stepena. Algoritam svodi DLP na više instanci u podgrupama manjeg reda.
+
+`pohlig_hellman.py` implementira Pohlig-Hellman algoritam.
+
+## Pollard p-1 napad
+
+Napad na RSA koji radi efikasno kada je p-1 ili q-1 B-gladak broj (deljiv samo
+prostim brojevima manjim od B).
+
+`pollard_p1.py` implementira Pollard p-1 algoritam. 
+
 ## Zadaci
 
 1. Ana Bobanu šalje poruku enkriptovanu pomoću RSA. Bobanov javni ključ je:
@@ -15,7 +29,7 @@ Odrediti poruku M ako je poznat šifrat:
 C=17804263439160944615212115660102150497899902713732968130942328933737091348102
 ```
 
-2. Bobanov javni ključ je:
+2. Bobanov javni RSA ključ je:
 ```
 n=7603286354234243903435872704677498363399458016631578496018195845589487786172473
 e=7535918899271596912605330771330141519800214292622992808169830647334620913196679
@@ -50,15 +64,4 @@ Odrediti poruku M ukoliko su poznati šifrat i Anin privremeni javni ključ:
 ```
 C=1702744174218185477932013811228957311607
 A=1314911118236658566754878896771289605934
-```
-
-5. Ana Bobanu šalje poruku M enkriptovanu pomoću Mesi-Omura kriptosistema. Parametar je:
-```
-p=4961134016835065759021114081421108249451
-```
-Odrediti poruku M ukoliko su poznati šifrati
-```
-C1=1935806553456146246638434845968358334435
-C2=2969866610933012757268798976814345183750
-C3=4295774173108554255328476453966719136455
 ```
