@@ -5,10 +5,10 @@ from network import Server
 import schnorr
 
 def handle_connection(socket):
-    # Generate server's keypair (with parameters)
-    private_key, public_key = schnorr.generate_keypair()
+    # Generate server's keypair
+    private_key, public_key = schnorr.generate()
     
-    # Send server's public key and parameters
+    # Send server's public key
     socket.send(public_key)
     
     # Receive client's public key
@@ -24,7 +24,7 @@ def handle_connection(socket):
     
     # Send signed response
     response = "Message and signature received and verified!"
-    response_signature = schnorr.sign(private_key, public_key, response)
+    response_signature = schnorr.sign(private_key, response)
     socket.send((response, response_signature))
 
 if __name__ == '__main__':

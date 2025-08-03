@@ -1,52 +1,18 @@
-"""
-Digital Signature Algorithm (DSA).
-"""
-
 from hashlib import sha256
 from random import randrange
-from Crypto.Util import number
 
-def generate_params():
-    """
-    Generate DSA parameters (p, q, g).
-    For demonstration, we use smaller parameters than in practice.
-    """
-    q = number.getPrime(160)  # 160-bit prime
-    # Find p = kq + 1 that is prime
-    while True:
-        k = number.getRandomNBitInteger(863)  # (1024-161) bits
-        p = k * q + 1
-        if number.isPrime(p):
-            break
-    
-    # Find generator g
-    while True:
-        h = number.getRandomRange(2, p-1)
-        g = pow(h, k, p)
-        if g != 1:
-            break
-    
-    return p, q, g
+# Testni DSA parametri
+p = 0x86F5CA03DCFEB225063FF830A0C769B9DD9D6153AD91D7CE27F787C43278B447E6533B86B18BED6E8A48B784A14C252C5BE0DBF60B86D6385BD2F12FB763ED8873ABFD3F5BA2E0A8C0A59082EAC056935E529DAF7C610467899C77ADEDFC846C881870B7B19B2B58F9BE0521A17002E3BDD6B86685EE90B3D9A1B02B782B1779
+q = 0x996F967F6C8E388D9E28D01E205FBA957A5698B1
+g = 0x07B0F92546150B62514BB771E2A0C0CE387F03BDA6C56B505209FF25FD3C133D89BBCD97E904E09114D9A7DEFDEADFC9078EA544D2E401AEECC40BB9FBBF78FD87995A10A1C27CB7789B594BA7EFB5C4326A9FE59A070E136DB77175464ADCA417BE5DCE2F40D10A46A3A3943F26AB7FD9C0398FF8C76EE0A56826A8A88F1DBD
 
-def generate_keypair(p=None, q=None, g=None):
-    """
-    Generisanje para ključeva.
-    Privatni ključ: x
-    Javni ključ: (p, q, g, y = g^x)
-    """
-    if p is None or q is None or g is None:
-        p, q, g = generate_params()
-        
+def generate():
     x = randrange(2, q)  # privatni ključ
     y = pow(g, x, p)     # javni ključ
-    return x, (p, q, g, y)
+    return x, y
 
-def sign(private_key, public_key, message):
-    """
-    Potpisivanje poruke.
-    """
+def sign(private_key, message):
     x = private_key
-    p, q, g, _ = public_key
 
     # Heširamo poruku
     h = int.from_bytes(sha256(message.encode()).digest(), 'big')
@@ -69,10 +35,7 @@ def sign(private_key, public_key, message):
         return r, s
 
 def verify(public_key, message, signature):
-    """
-    Verifikacija potpisa.
-    """
-    p, q, g, y = public_key
+    y = public_key
     r, s = signature
 
     # Proveravamo da li je potpis u opsegu
@@ -82,14 +45,14 @@ def verify(public_key, message, signature):
     # Heširamo poruku
     h = int.from_bytes(sha256(message.encode()).digest(), 'big')
 
-    # Računamo w = s^(-1) mod q
-    w = pow(s, -1, q)
+    # Računamo s^(-1) mod q
+    s_inv = pow(s, -1, q)
 
-    # Računamo u1 = hw mod q
-    u1 = (h * w) % q
+    # Računamo u1 = hs^(-1) mod q
+    u1 = (h * s_inv) % q
 
-    # Računamo u2 = rw mod q
-    u2 = (r * w) % q
+    # Računamo u2 = rs^(-1) mod q
+    u2 = (r * s_inv) % q
 
     # Računamo v = (g^u1 * y^u2 mod p) mod q
     v = ((pow(g, u1, p) * pow(y, u2, p)) % p) % q
