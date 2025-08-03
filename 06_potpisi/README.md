@@ -1,8 +1,8 @@
-# Asimetrična kriptografija 2: Digitalni potpisi i napadi
+# Digitalni potpisi
 
 _Literatura: Cryptography made simple (poglavlja 2, 3, 16)_
 
-Digitalni potpisi su kriptografski mehanizmi koji omogućavaju proveru autentičnosti
+Digitalni potpisi su kriptografski protokoli koji omogućavaju proveru autentičnosti
 poruke i njenog pošiljaoca. Potpisi moraju biti:
 - Nefalsifikujući (samo vlasnik privatnog ključa može da generiše validan potpis)
 - Proverljivi (svako može da proveri validnost potpisa koristeći javni ključ)

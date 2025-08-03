@@ -24,8 +24,8 @@ h = 8
 
 Naći x tako da je 5^x ≡ 8 (mod 23)
 
-Rešenje je x = 18 jer je:
-5^18 ≡ 8 (mod 23)
+Rešenje je x = 6 jer je:
+5^6 ≡ 8 (mod 23)
 ~~~
 
 ## Problem faktorizacije
