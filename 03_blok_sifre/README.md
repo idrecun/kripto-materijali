@@ -12,7 +12,7 @@ $\{0,1\}^k$ gde je $k$ veličina bloka. Prikazaćemo dva načina za konstrukciju
 ### S-box (Substitution box)
 
 S-box je komponenta koja vrši supstituciju - preslikava m ulaznih bitova u n
-izlaznih bitova bijekcijom, najčešće pomoću unapred definisane lookup tabele.
+izlaznih bitova, najčešće pomoću unapred definisane lookup tabele.
 
 ~~~
 Primer:
