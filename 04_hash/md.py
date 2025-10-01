@@ -27,8 +27,11 @@ def md(data):
 
 
 def hmac(key, message):
-    opad = bits_from_int(0x36, 8) * len(message // 8)
-    ipad = bits_from_int(0x5C, 8) * len(message // 8)
+    repeat = 1 + len(key) // 8
+    ipad_byte = bits_from_int(0x36, 8)
+    opad_byte = bits_from_int(0x5C, 8)
+    ipad = (ipad_byte * repeat)[: len(key)]
+    opad = (opad_byte * repeat)[: len(key)]
     return md(xor(opad, key) + md(xor(ipad, key) + message))
 
 
